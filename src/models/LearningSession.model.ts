@@ -1,0 +1,67 @@
+import {Schema, Types, Document, model} from 'mongoose'
+
+interface IBlocks {
+    type: 'text' | 'heading' | 'link' | 'document' | 'image' | 'code';
+    content: string;
+    order: number
+}
+
+interface ILearningSession extends Document{
+    notebookId: Types.ObjectId;
+    title: string;
+    blocks: IBlocks[];
+    totalTimeSpent: number;
+}
+
+const blockSchema = new Schema<IBlocks>(
+    { 
+        type: {
+            type: String,
+            required: true,
+            enum: ['text', 'heading', 'link', 'document', 'image', 'code']
+        },
+        content: {
+            type: String,
+            required: true,
+            trim: true,
+            default: "",
+        },
+        order: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+    },
+    {
+        _id: true
+    }
+);
+
+const learningSessionSchema = new Schema<ILearningSession>(
+    {
+        notebookId: {
+            type: Schema.Types.ObjectId,
+            ref: 'Notebook',
+            required: true,
+        },
+        title: {
+            type: String,
+            required: true,
+            trim: true,
+            index: true,
+        },
+        blocks: {
+            type: [blockSchema],
+            default: []
+        },
+        totalTimeSpent: {
+            type: Number,
+            default: 0,
+        },
+    },
+    {
+        timestamps: true
+    }
+);
+
+export const LearningSession = model<ILearningSession>('LearningSession', learningSessionSchema );
