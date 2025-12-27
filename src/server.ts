@@ -3,6 +3,9 @@ import express, {Request, Response} from 'express';
 import cors from 'cors';
 import {CONNECT_DB} from './db'
 
+import { errorHandler } from './middlewares/error.middleware';
+import notebookRouter from './routes/notebook.routes';
+
 dotenv.config()
 
 const app = express()
@@ -10,7 +13,7 @@ const app = express()
 app.use(cors());
 app.use(express.json())
 
-
+app.use('/notebook', notebookRouter)
 
 const PORT = process.env.PORT || 8000
 
@@ -26,5 +29,7 @@ const startServer = async () => {
 }
 
 startServer()
+
+app.use(errorHandler);
 
 export default app
