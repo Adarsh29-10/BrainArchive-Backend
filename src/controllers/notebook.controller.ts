@@ -1,21 +1,22 @@
 import { asyncHandler } from "../utils/asyncHandler";
-import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { Request, Response } from "express";
-import { Notebook } from "../models/Notebook.model";
+import { 
+    createNotebookService, 
+    getNotebookByIdService, 
+    getNotebooksService, 
+    removeNotebookService, 
+    updateNotebookService
+} from "../services/notebook.service";
 
 export const createNotebook = asyncHandler(
     async(req:Request, res:Response) => {
         const { title, description } = req.body;
 
-        if(!title){
-            return new ApiError(400, 'Title is required');
-        }
-
-        const notebook = await Notebook.create({
+        const notebook = await createNotebookService({
             title,
             description,
-            user: req.user?._id,  //later 
+            userId: req.user?._id.toString(),  //later 
         })
 
         return res
@@ -26,27 +27,19 @@ export const createNotebook = asyncHandler(
 
 export const getNotebooks = asyncHandler(
     async (req:Request, res:Response) => {
-        const notebooks = await Notebook.find({ user: req.user?._id});
+        const notebooks = await getNotebooksService({userId: req.user?._id.toString()});
         
         return res
             .status(200)
-            .json(new ApiResponse(201, notebooks, 'Notebooks fetched'));
+            .json(new ApiResponse(200, notebooks, 'Notebooks fetched'));
     }
 )
 
 export const getNotebookById = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id: notebookId } = req.params;
+    const { id } = req.params;
 
-    if (!notebookId) {
-      throw new ApiError(400, 'Notebook id is required');
-    }
-
-    const notebook = await Notebook.findById(notebookId);
-
-    if (!notebook) {
-      throw new ApiError(404, 'Notebook not found');
-    }
+    const notebook = await getNotebookByIdService({id});
 
     return res
       .status(200)
@@ -59,19 +52,11 @@ export const updateNotebook = asyncHandler(
         const {id} = req.params;
         const {title, description } = req.body;
 
-        if(!title){
-            return new ApiError(400, 'Title is required');
-        }
-
-        const notebook = await Notebook.findByIdAndUpdate(
+        const notebook = await updateNotebookService({
             id,
-            {title, description},
-            {new:true, runValidators:true}
-        );
-
-        if(!notebook){
-            return new ApiError(404, 'Notebook not found');
-        }
+            title, 
+            description
+        })
 
         return res
             .status(200)
@@ -83,13 +68,7 @@ export const removeNotebook = asyncHandler(
     async (req:Request, res:Response) => {
         const {id} = req.params;
 
-        const notebook = await Notebook.findByIdAndDelete(
-            id
-        )
-
-        if(!notebook){
-            return new ApiError(404, 'Notebook not found');
-        }
+        const notebook = await removeNotebookService({id});
 
         return res
             .status(200)
