@@ -1,17 +1,17 @@
 import { Schema, model, Document  } from 'mongoose';
 
 interface IUser extends Document  {
-    name: string;
+    auth0Id: string;
     email: string;
-    password: string;
+    name?: string;
 }
 
 const userSchema = new Schema<IUser>(
     {
-        name: {
+        auth0Id: {
             type: String,
             required: true,
-            trim: true,
+            unique: true,
         },
         email: {
             type: String,
@@ -23,10 +23,8 @@ const userSchema = new Schema<IUser>(
                 'Please enter a valid email address',
             ],
         },
-        password: {
+        name: {
             type: String,
-            required: true,
-            minlength: 6,
         },
     },
     {
