@@ -1,7 +1,10 @@
+import dotenv from 'dotenv'
 import { expressjwt } from "express-jwt";
 import jwksRsa from "jwks-rsa";
 import { Request, Response, NextFunction } from "express";
 import { User } from "../models/User.model";
+
+dotenv.config()
 
 export const checkJwt = expressjwt({
     secret: jwksRsa.expressJwtSecret({
