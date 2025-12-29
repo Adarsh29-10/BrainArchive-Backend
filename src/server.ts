@@ -17,7 +17,7 @@ app.use(cors());
 app.use(express.json())
 
 app.use("/user", checkJwt, attachUser, userRouter);
-app.use("/notebook", checkJwt, attachUser, notebookRouter);
+app.use("/notebooks", checkJwt, attachUser, notebookRouter);
 
 const PORT = process.env.PORT || 8000
 
