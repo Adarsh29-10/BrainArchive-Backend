@@ -22,6 +22,10 @@ export const createNotebookService = async(data: {
 export const getNotebooksService = async(data: {
     userId:string,
 }) => {
+    if (!data.userId || data.userId === "undefined") {
+        throw new ApiError(401, 'User ID not found. User may not be authenticated.');
+    }
+
     const notebooks = await Notebook.find({ userId: data.userId});
 
     return notebooks;
