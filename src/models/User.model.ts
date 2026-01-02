@@ -13,15 +13,17 @@ const userSchema = new Schema<IUser>(
             required: true,
             unique: true,
         },
+
         email: {
             type: String,
-            required: true,
-            unique: true,
-            lowercase: true,
-            match: [
-                /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-                'Please enter a valid email address',
-            ],
+            required: false,
+            validate: {
+                validator: function (v: string) {
+                if (!v) return true;
+                return /^\S+@\S+\.\S+$/.test(v);
+                },
+                message: "Invalid email",
+            },
         },
         name: {
             type: String,
