@@ -8,6 +8,8 @@ import {
     removeNotebookService, 
     updateNotebookService
 } from "../services/notebook.service";
+import { createSessionService } from "../services/session.service";
+
 
 export const createNotebook = asyncHandler(
     async(req:Request, res:Response) => {
@@ -25,6 +27,7 @@ export const createNotebook = asyncHandler(
     }
 )
 
+
 export const getNotebooks = asyncHandler(
     async (req:Request, res:Response) => {
         const notebooks = await getNotebooksService({userId: req.user?._id.toString()});
@@ -35,11 +38,12 @@ export const getNotebooks = asyncHandler(
     }
 )
 
+
 export const getNotebookById = asyncHandler(
   async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const { notebookId } = req.params;
 
-    const notebook = await getNotebookByIdService({id});
+    const notebook = await getNotebookByIdService({notebookId});
 
     return res
       .status(200)
@@ -47,13 +51,14 @@ export const getNotebookById = asyncHandler(
   }
 );
 
+
 export const updateNotebook = asyncHandler(
     async (req:Request, res:Response) => {
-        const {id} = req.params;
+        const {notebookId} = req.params;
         const {title, description } = req.body;
 
         const notebook = await updateNotebookService({
-            id,
+            notebookId,
             title, 
             description
         })
@@ -64,14 +69,31 @@ export const updateNotebook = asyncHandler(
     }
 )
 
+
 export const removeNotebook = asyncHandler(
     async (req:Request, res:Response) => {
-        const {id} = req.params;
+        const {notebookId} = req.params;
 
-        const notebook = await removeNotebookService({id});
+        const notebook = await removeNotebookService({notebookId});
 
         return res
             .status(200)
             .json(new ApiResponse(200, notebook, 'Notebook deleted'));
     }
 ) 
+
+
+export const createSession = asyncHandler(
+    async (req:Request, res:Response) => {
+        const {notebookId} = req.params;
+
+        const session = await createSessionService({
+            notebookId,
+            userId: req.user?._id.toString(),
+        });
+
+        return res
+            .status(201)
+            .json(new ApiResponse(201, session, 'Session created'));
+    }
+);

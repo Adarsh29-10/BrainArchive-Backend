@@ -4,7 +4,8 @@ import {
     getNotebooks, 
     getNotebookById, 
     updateNotebook, 
-    removeNotebook
+    removeNotebook,
+    createSession
 } from '../controllers/notebook.controller'
 
 const router = express.Router()
@@ -12,8 +13,9 @@ const router = express.Router()
 router.post('/', createNotebook);
 router.get('/', getNotebooks);
 
-router.get('/:id', getNotebookById);
-router.put('/:id', updateNotebook);
-router.delete('/:id', removeNotebook);
+router.get('/:notebookId', getNotebookById);
+router.put('/:notebookId', updateNotebook);
+router.delete('/:notebookId', removeNotebook);
+router.post('/:notebookId/session', createSession)
 
 export default router;
