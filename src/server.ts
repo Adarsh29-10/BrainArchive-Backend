@@ -4,10 +4,11 @@ import cors from 'cors';
 import {CONNECT_DB} from './db'
 
 import { errorHandler } from './middlewares/error.middleware';
-import notebookRouter from './routes/notebook.routes';
 import { checkJwt } from './middlewares/auth0.middleware';
 import { attachUser } from './middlewares/auth.middleware';
+import notebookRouter from './routes/notebook.routes';
 import userRouter from './routes/user.routes';
+import sessionRouter from './routes/session.routes';
 
 dotenv.config()
 
@@ -18,6 +19,7 @@ app.use(express.json())
 
 app.use("/user", checkJwt, attachUser, userRouter);
 app.use("/notebooks", checkJwt, attachUser, notebookRouter);
+app.use("/sessions", checkJwt, attachUser, sessionRouter);
 
 const PORT = process.env.PORT || 8000
 
