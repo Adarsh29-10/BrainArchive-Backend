@@ -49,7 +49,8 @@ export const getSessionByIdService = async (data:{
 
 export const updateSessionService = async (data: {
     sessionId:string,
-    title:string
+    title?:string,
+    blocks:any[],
 }) => {
     const session = await LearningSession.findById(data.sessionId);
 
@@ -59,6 +60,9 @@ export const updateSessionService = async (data: {
 
     if(data.title !== undefined){
         session.title = data.title;
+    }
+    if(data.blocks !== undefined){
+        session.blocks = data.blocks;
     }
 
     await session.save();

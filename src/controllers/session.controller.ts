@@ -27,11 +27,12 @@ export const getSessionById = asyncHandler(
 export const updateSession = asyncHandler(
     async (req:Request, res:Response) => {
         const {sessionId} = req.params;
-        const {title} = req.body;
+        const {title, blocks} = req.body;
 
         const session = await updateSessionService({
             sessionId,
-            title
+            title,
+            blocks
         });
 
         return res
