@@ -5,10 +5,11 @@ import {
     createNotebookService, 
     getNotebookByIdService, 
     getNotebooksService, 
-    removeNotebookService, 
-    updateNotebookService
+    deleteNotebookService, 
+    updateNotebookBlockService, 
+    updateNotebookService,
 } from "../services/notebook.service";
-import { createSessionService } from "../services/session.service";
+import { ApiError } from "../utils/ApiError";
 
 
 export const createNotebook = asyncHandler(
@@ -18,7 +19,11 @@ export const createNotebook = asyncHandler(
         const notebook = await createNotebookService({
             title,
             description,
-            userId: req.user?._id.toString(),  //later 
+            userId: req.user!._id.toString(),
+            isPublic: false,
+            blocks: [],
+            totalTimeSpent: 0,
+            lastActivityAt: null,   
         })
 
         return res
@@ -70,11 +75,11 @@ export const updateNotebook = asyncHandler(
 )
 
 
-export const removeNotebook = asyncHandler(
+export const deleteNotebook = asyncHandler(
     async (req:Request, res:Response) => {
         const {notebookId} = req.params;
 
-        const notebook = await removeNotebookService({notebookId});
+        const notebook = await deleteNotebookService({notebookId});
 
         return res
             .status(200)
@@ -82,18 +87,50 @@ export const removeNotebook = asyncHandler(
     }
 ) 
 
+// export const updateNotebookBlock = asyncHandler(
+//     async (req:Request, res:Response) => {
+//         const {notebookId} = req.params;
+//         const {blocks, totalTimeSpent} = req.body;
 
-export const createSession = asyncHandler(
-    async (req:Request, res:Response) => {
-        const {notebookId} = req.params;
+//         const block = await updateNotebookBlockService({
+//             userId: req.user!._id.toString(),
+//             notebookId,
+//             blocks,
+//             totalTimeSpent,
+//         });
 
-        const session = await createSessionService({
-            notebookId,
-            userId: req.user?._id.toString(),
-        });
+//         return res
+//             .status(200)
+//             .json(new ApiResponse(200, block, 'Block created'));
+//     }
+// );
 
-        return res
-            .status(201)
-            .json(new ApiResponse(201, session, 'Session created'));
+export const updateNotebookBlock = asyncHandler(
+  async (req: Request, res: Response) => {
+
+    if (!req.user) {
+      throw new ApiError(401, "Unauthorized");
     }
+
+    const { notebookId } = req.params;
+    const { blocks } = req.body;
+
+    if (!Array.isArray(blocks)) {
+      throw new ApiError(400, "Blocks must be an array");
+    }
+
+    const notebook = await updateNotebookBlockService({
+      userId: req.user._id.toString(),
+      notebookId,
+      blocks,
+      
+    });
+
+    return res.status(200).json(
+      new ApiResponse(200, notebook, "Notebook blocks updated")
+    );
+  }
 );
+
+
+
