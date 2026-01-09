@@ -1,3 +1,9 @@
-
-export type BlockType = 
-    'text' | 'heading' | 'link' | 'document' | 'image' | 'code';
+export type BlockType =
+  | "heading"
+  | "paragraph"
+  | "document"
+  | "image"
+  | "video"
+  | "code"
+  | "link"
+  | "bullet";
