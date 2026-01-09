@@ -1,10 +1,19 @@
 import { Notebook } from "../models/Notebook.model";
+import { BlockType } from "../types/blocks.types";
 import { ApiError } from "../utils/ApiError";
 
 export const createNotebookService = async(data: {
-    title:string,
-    description:string,
-    userId: string,
+    title:string;
+    description?:string;
+    userId: string;
+    isPublic: boolean;
+    blocks: {
+        type: BlockType;
+        content: string;
+        order: number;
+    }[];
+    totalTimeSpent: number;
+    lastActivityAt: Date | null;
 }) => {
     if(!data.title){
         throw new ApiError(400, 'Title is required');
@@ -13,7 +22,11 @@ export const createNotebookService = async(data: {
     const notebook = await Notebook.create({
         title: data.title,
         description: data.description,
-        userId: data.userId
+        userId: data.userId,
+        isPublic: data.isPublic,
+        blocks: data.blocks,
+        totalTimeSpent: data.totalTimeSpent,
+        lastActivityAt: data.lastActivityAt,
     });
     
     return notebook;
@@ -73,7 +86,7 @@ export const updateNotebookService = async(data: {
 }
 
 
-export const removeNotebookService = async(data: {
+export const deleteNotebookService = async(data: {
     notebookId: string,
 }) => {
     const notebook = await Notebook.findByIdAndDelete(
@@ -86,3 +99,39 @@ export const removeNotebookService = async(data: {
 
     return notebook;
 }
+
+export const updateNotebookBlockService = async (data: {
+  userId: string;
+  notebookId: string;
+  blocks: {
+    type: BlockType;
+    content: string;
+    order?: number;
+  }[];
+}) => {
+  const notebook = await Notebook.findOne({
+    _id: data.notebookId,
+    userId: data.userId,
+  });
+
+  if (!notebook) {
+    throw new ApiError(404, "Notebook not found");
+  }
+
+  notebook.blocks = data.blocks.map((block, index) => ({
+    type: block.type,
+    content: block.content,
+    order: block.order ?? index,
+  }));
+
+  notebook.lastActivityAt = new Date();
+
+  if (data.totalTimeSpent !== undefined) {
+    notebook.totalTimeSpent = data.totalTimeSpent;
+  }
+
+  await notebook.save();
+  return notebook;
+};
+
+
