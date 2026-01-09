@@ -87,24 +87,6 @@ export const deleteNotebook = asyncHandler(
     }
 ) 
 
-// export const updateNotebookBlock = asyncHandler(
-//     async (req:Request, res:Response) => {
-//         const {notebookId} = req.params;
-//         const {blocks, totalTimeSpent} = req.body;
-
-//         const block = await updateNotebookBlockService({
-//             userId: req.user!._id.toString(),
-//             notebookId,
-//             blocks,
-//             totalTimeSpent,
-//         });
-
-//         return res
-//             .status(200)
-//             .json(new ApiResponse(200, block, 'Block created'));
-//     }
-// );
-
 export const updateNotebookBlock = asyncHandler(
   async (req: Request, res: Response) => {
 
