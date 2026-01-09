@@ -19,7 +19,6 @@ app.use(express.json())
 
 app.use("/user", checkJwt, attachUser, userRouter);
 app.use("/notebooks", checkJwt, attachUser, notebookRouter);
-app.use("/sessions", checkJwt, attachUser, sessionRouter);
 
 const PORT = process.env.PORT || 8000
 
