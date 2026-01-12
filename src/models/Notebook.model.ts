@@ -21,7 +21,7 @@ const blockSchema = new Schema<IBlock>(
         type: {
             type: String,
             required: true,
-            enum: ['heading', 'paragraph', 'document', 'image', 'video', 'code', 'link', 'bullet' ]
+            enum: ['heading','heading1', 'paragraph', 'document', 'image', 'video', 'code', 'link', 'bullet' ]
         },
         content: {
             type: String,
