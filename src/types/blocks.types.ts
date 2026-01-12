@@ -1,5 +1,6 @@
 export type BlockType =
   | "heading"
+  | "heading1"
   | "paragraph"
   | "document"
   | "image"
