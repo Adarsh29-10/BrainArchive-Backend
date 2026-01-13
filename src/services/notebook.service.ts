@@ -122,13 +122,13 @@ export const updateNotebookBlockService = async (data: {
     type: block.type,
     content: block.content,
     order: block.order ?? index,
-  }));
+  })) as any;
 
   notebook.lastActivityAt = new Date();
 
-  if (data.totalTimeSpent !== undefined) {
-    notebook.totalTimeSpent = data.totalTimeSpent;
-  }
+//   if (data.totalTimeSpent !== undefined) {
+//     notebook.totalTimeSpent = data.totalTimeSpent;
+//   }
 
   await notebook.save();
   return notebook;
