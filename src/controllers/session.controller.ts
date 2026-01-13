@@ -1,93 +1,93 @@
-import { Request, Response } from "express"
-import { 
-    addBlockToSessionService,
-    getSessionByIdService,
-    updateSessionService,
-    deleteSessionService,
-    updateBlockService
-} from "../services/session.service";
+// import { Request, Response } from "express"
+// import { 
+//     addBlockToSessionService,
+//     getSessionByIdService,
+//     updateSessionService,
+//     deleteSessionService,
+//     updateBlockService
+// } from "../services/session.service";
 
-import { ApiResponse } from "../utils/ApiResponse";
-import { asyncHandler } from "../utils/asyncHandler";
+// import { ApiResponse } from "../utils/ApiResponse";
+// import { asyncHandler } from "../utils/asyncHandler";
 
-export const getSessionById = asyncHandler(
-    async (req:Request, res:Response) => {
-        const {sessionId} = req.params;
+// export const getSessionById = asyncHandler(
+//     async (req:Request, res:Response) => {
+//         const {sessionId} = req.params;
 
-        const session = await getSessionByIdService({
-            sessionId
-        });
+//         const session = await getSessionByIdService({
+//             sessionId
+//         });
 
-        return res
-            .status(200)
-            .json(new ApiResponse(200, session, 'session fetched'));
-    }
-);
+//         return res
+//             .status(200)
+//             .json(new ApiResponse(200, session, 'session fetched'));
+//     }
+// );
 
-export const updateSession = asyncHandler(
-    async (req:Request, res:Response) => {
-        const {sessionId} = req.params;
-        const {title, blocks} = req.body;
+// export const updateSession = asyncHandler(
+//     async (req:Request, res:Response) => {
+//         const {sessionId} = req.params;
+//         const {title, blocks} = req.body;
 
-        const session = await updateSessionService({
-            sessionId,
-            title,
-            blocks
-        });
+//         const session = await updateSessionService({
+//             sessionId,
+//             title,
+//             blocks
+//         });
 
-        return res
-            .status(201)
-            .json(new ApiResponse(201, session, 'Session updated'));
-    }
-);
+//         return res
+//             .status(201)
+//             .json(new ApiResponse(201, session, 'Session updated'));
+//     }
+// );
 
-export const deleteSession = asyncHandler(
-    async (req:Request, res:Response) => {
-        const {sessionId} = req.params;
+// export const deleteSession = asyncHandler(
+//     async (req:Request, res:Response) => {
+//         const {sessionId} = req.params;
 
-        const session = await deleteSessionService({
-            sessionId
-        });
+//         const session = await deleteSessionService({
+//             sessionId
+//         });
 
-        return res
-            .status(200)
-            .json(new ApiResponse(200, session, 'session fetched'));
-    }
-);
+//         return res
+//             .status(200)
+//             .json(new ApiResponse(200, session, 'session fetched'));
+//     }
+// );
 
 
-export const addBlockToSession = asyncHandler(
-    async (req:Request, res:Response) => {
-        const {sessionId} = req.params;
-        const {type, content, order} = req.body;
+// export const addBlockToSession = asyncHandler(
+//     async (req:Request, res:Response) => {
+//         const {sessionId} = req.params;
+//         const {type, content, order} = req.body;
 
-        const block = await addBlockToSessionService({
-            sessionId,
-            type, content, order,
-        });
+//         const block = await addBlockToSessionService({
+//             sessionId,
+//             type, content, order,
+//         });
 
-        return res
-            .status(201)
-            .json(new ApiResponse(201, block, 'Block created'));
-    }
-);
+//         return res
+//             .status(201)
+//             .json(new ApiResponse(201, block, 'Block created'));
+//     }
+// );
 
-export const updateBlock = asyncHandler(
-    async (req:Request, res:Response) => {
-        const {sessionId, blockId} = req.params;
-        const {type, content} = req.body;
+// export const updateBlock = asyncHandler(
+//     async (req:Request, res:Response) => {
+//         const {sessionId, blockId} = req.params;
+//         const {type, content} = req.body;
 
-        const block = await updateBlockService({
-            sessionId,
-            blockId,
-            content,
-        });
+//         const block = await updateBlockService({
+//             sessionId,
+//             blockId,
+//             content,
+//         });
 
-        return res
-            .status(201)
-            .json(new ApiResponse(201, block, 'Block created'));
-    }
-);
+//         return res
+//             .status(201)
+//             .json(new ApiResponse(201, block, 'Block created'));
+//     }
+// );
 
 
 
