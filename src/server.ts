@@ -8,7 +8,6 @@ import { checkJwt } from './middlewares/auth0.middleware';
 import { attachUser } from './middlewares/auth.middleware';
 import notebookRouter from './routes/notebook.routes';
 import userRouter from './routes/user.routes';
-import sessionRouter from './routes/session.routes';
 
 dotenv.config()
 
