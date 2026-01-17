@@ -1,11 +1,8 @@
 import express from 'express'
-import { User } from "../models/User.model";
-import { Request, Response } from 'express';
+import { userMe } from '../controllers/user.controller';
 
 const router = express.Router()
 
-router.get('/me', (req:Request, res:Response)=>{
-    res.status(200).json(req.user);
-})
+router.post('/me', userMe)
 
 export default router;
