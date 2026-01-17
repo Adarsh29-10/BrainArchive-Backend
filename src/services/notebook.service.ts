@@ -70,8 +70,9 @@ export const getNotebookByIdService = async(data: {
 export const updateNotebookService = async(data: {
     notebookId:string,
     userId: string
-    title:string,
-    description?:string
+    title: string,
+    description?: string,
+    isPublic: boolean
 }) => {
     if(!data.title) {
         throw new ApiError(400, "Title is required");
@@ -84,7 +85,8 @@ export const updateNotebookService = async(data: {
         },
         {
             title: data.title, 
-            description: data.description
+            description: data.description,
+            isPublic: data.isPublic
         },
         {new:true, runValidators:true}
     );

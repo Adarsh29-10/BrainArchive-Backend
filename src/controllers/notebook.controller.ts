@@ -71,13 +71,14 @@ export const updateNotebook = asyncHandler(
         const user = await getCurrentUser(req);
 
         const {notebookId} = req.params;
-        const {title, description } = req.body;
+        const {title, description, isPublic } = req.body;
 
         const notebook = await updateNotebookService({
             notebookId,
             userId: user._id.toString(),
             title, 
-            description
+            description,
+            isPublic
         })
 
         return res
