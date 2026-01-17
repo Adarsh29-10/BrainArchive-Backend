@@ -47,13 +47,17 @@ export const getNotebooksService = async(data: {
 
 
 export const getNotebookByIdService = async(data: {
-    notebookId:string
+    notebookId:string,
+    userId: string
 }) => {
     if(!data.notebookId){
         throw new ApiError(400, 'Notebook id is required');
     }
 
-    const notebook = await Notebook.findById(data.notebookId)
+    const notebook = await Notebook.findById({
+        _id: data.notebookId,
+        userId: data.userId
+    })
 
     if (!notebook) {
         throw new ApiError(404, 'Notebook not found');
@@ -65,6 +69,7 @@ export const getNotebookByIdService = async(data: {
 
 export const updateNotebookService = async(data: {
     notebookId:string,
+    userId: string
     title:string,
     description?:string
 }) => {
@@ -73,8 +78,14 @@ export const updateNotebookService = async(data: {
     }
 
     const notebook = await Notebook.findByIdAndUpdate(
-        data.notebookId,
-        {title: data.title, description: data.description},
+        {
+            _id: data.notebookId,
+            userId: data.userId
+        },
+        {
+            title: data.title, 
+            description: data.description
+        },
         {new:true, runValidators:true}
     );
 
@@ -88,10 +99,12 @@ export const updateNotebookService = async(data: {
 
 export const deleteNotebookService = async(data: {
     notebookId: string,
+    userId: string
 }) => {
-    const notebook = await Notebook.findByIdAndDelete(
-        data.notebookId
-    )
+    const notebook = await Notebook.findByIdAndDelete({
+        _id: data.notebookId,
+        userId: data.userId
+    })
 
     if(!notebook){
         throw new ApiError(404, 'Notebook not found');
