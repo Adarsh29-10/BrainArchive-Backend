@@ -10,17 +10,20 @@ import {
     updateNotebookService,
 } from "../services/notebook.service";
 import { ApiError } from "../utils/ApiError";
+import { getCurrentUser } from "../utils/getCurrentUser";
 
 
 export const createNotebook = asyncHandler(
     async(req:Request, res:Response) => {
-        const { title, description } = req.body;
+        const { title, description, isPublic } = req.body;
+
+        const user = await getCurrentUser(req);
 
         const notebook = await createNotebookService({
             title,
             description,
-            userId: req.user!._id.toString(),
-            isPublic: false,
+            userId: user._id.toString(),
+            isPublic,
             blocks: [],
             totalTimeSpent: 0,
             lastActivityAt: null,   
@@ -35,7 +38,9 @@ export const createNotebook = asyncHandler(
 
 export const getNotebooks = asyncHandler(
     async (req:Request, res:Response) => {
-        const notebooks = await getNotebooksService({userId: req.user?._id.toString()});
+        const user = await getCurrentUser(req);
+        
+        const notebooks = await getNotebooksService({userId: user?._id.toString()});
         
         return res
             .status(200)
@@ -46,9 +51,13 @@ export const getNotebooks = asyncHandler(
 
 export const getNotebookById = asyncHandler(
   async (req: Request, res: Response) => {
+    const user = await getCurrentUser(req);
     const { notebookId } = req.params;
 
-    const notebook = await getNotebookByIdService({notebookId});
+    const notebook = await getNotebookByIdService({
+      notebookId: notebookId,
+      userId: user._id.toString()
+    });
 
     return res
       .status(200)
@@ -59,11 +68,14 @@ export const getNotebookById = asyncHandler(
 
 export const updateNotebook = asyncHandler(
     async (req:Request, res:Response) => {
+        const user = await getCurrentUser(req);
+
         const {notebookId} = req.params;
         const {title, description } = req.body;
 
         const notebook = await updateNotebookService({
             notebookId,
+            userId: user._id.toString(),
             title, 
             description
         })
@@ -77,9 +89,13 @@ export const updateNotebook = asyncHandler(
 
 export const deleteNotebook = asyncHandler(
     async (req:Request, res:Response) => {
+        const user = await getCurrentUser(req);
         const {notebookId} = req.params;
 
-        const notebook = await deleteNotebookService({notebookId});
+        const notebook = await deleteNotebookService({
+          notebookId: notebookId,
+          userId: user._id.toString(),
+        });
 
         return res
             .status(200)
@@ -90,9 +106,7 @@ export const deleteNotebook = asyncHandler(
 export const updateNotebookBlock = asyncHandler(
   async (req: Request, res: Response) => {
 
-    if (!req.user) {
-      throw new ApiError(401, "Unauthorized");
-    }
+    const user = await getCurrentUser(req);
 
     const { notebookId } = req.params;
     const { blocks } = req.body;
@@ -102,7 +116,7 @@ export const updateNotebookBlock = asyncHandler(
     }
 
     const notebook = await updateNotebookBlockService({
-      userId: req.user._id.toString(),
+      userId: user._id.toString(),
       notebookId,
       blocks,
       
