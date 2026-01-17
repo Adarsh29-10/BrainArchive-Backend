@@ -3,7 +3,9 @@ import { IUser } from "../models/User.model";
 declare global {
   namespace Express {
     interface Request {
-      user?: IUser;
+      user?: {
+        auth0Id: string;
+      };
       auth?: {
         sub?: string;
         email?: string;
