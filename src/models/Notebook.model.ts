@@ -1,7 +1,8 @@
-import { Schema, model, Document, Types } from 'mongoose'
+import { Schema, model, Document, Types, ObjectId } from 'mongoose'
 import { BlockType } from '../types/blocks.types';
 
 interface IBlock {
+    _id?: ObjectId;
     type: BlockType;
     content: string;
     order: number
@@ -21,7 +22,7 @@ const blockSchema = new Schema<IBlock>(
         type: {
             type: String,
             required: true,
-            enum: ['heading','heading1', 'paragraph', 'document', 'image', 'video', 'code', 'link', 'bullet' ]
+            enum: BlockType
         },
         content: {
             type: String,
