@@ -3,6 +3,8 @@ export const BlockType = [
   "heading1",
   "heading2",
   "paragraph",
+  "paragraph1",
+  "divider",
   "document",
   "image",
   "video",
