@@ -26,7 +26,6 @@ const blockSchema = new Schema<IBlock>(
         },
         content: {
             type: String,
-            required: true,
             trim: true,
             default: "",
         },
