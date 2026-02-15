@@ -40,7 +40,8 @@ export const getNotebooksService = async(data: {
         throw new ApiError(401, 'User ID not found. User may not be authenticated.');
     }
 
-    const notebooks = await Notebook.find({ userId: data.userId});
+    const notebooks = await Notebook.find({ userId: data.userId})
+        .sort({updatedAt: -1})
 
     return notebooks;
 }
