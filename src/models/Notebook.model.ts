@@ -35,7 +35,8 @@ const blockSchema = new Schema<IBlock>(
         },
     },
     {
-        _id: true
+        _id: true,
+        timestamps: true  
     }
 );
 
