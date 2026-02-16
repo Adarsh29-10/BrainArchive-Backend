@@ -151,3 +151,50 @@ export const updateNotebookBlockService = async (data: {
 };
 
 
+export const addNotebookBlockService = async (data: {
+  userId: string;
+  notebookId: string;
+  _id: string;
+  type: BlockType;
+  prevBlockId?: string;
+}) => {
+  const notebook = await Notebook.findOne({
+    _id: data.notebookId,
+    userId: data.userId,
+  });
+
+  if (!notebook) {
+    throw new ApiError(404, "Notebook not found");
+  }
+
+  const existing = notebook.blocks.id(data._id);
+  if (existing) {
+    throw new ApiError(400, "Block id already exists");
+  }
+
+  const newBlock = {
+    _id: data._id,
+    type: data.type,
+    content: "",
+  };
+
+  if (!data.prevBlockId) {
+    notebook.blocks.push(newBlock);
+  } else {
+    const index = notebook.blocks.findIndex(
+      b => b._id.toString() === data.prevBlockId
+    );
+
+    if (index === -1) {
+      notebook.blocks.push(newBlock);
+    } else {
+      notebook.blocks.splice(index + 1, 0, newBlock);
+    }
+  }
+
+  notebook.lastActivityAt = new Date();
+
+  await notebook.save();
+
+  return notebook;
+};
