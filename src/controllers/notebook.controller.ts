@@ -5,7 +5,8 @@ import {
     createNotebookService, 
     getNotebookByIdService, 
     getNotebooksService, 
-    deleteNotebookService, 
+    deleteNotebookService,
+    addNotebookBlockService,
     updateNotebookBlockService, 
     updateNotebookService,
 } from "../services/notebook.service";
@@ -130,4 +131,31 @@ export const updateNotebookBlock = asyncHandler(
 );
 
 
+export const addNotebookBlock = asyncHandler(
+  async (req: Request, res: Response) => {
+    const user = await getCurrentUser(req);
+    const { notebookId } = req.params;
+    const { _id, type, prevBlockId } = req.body;
+
+    if (!_id) {
+      throw new ApiError(400, "Block id is required");
+    }
+
+    if (!type) {
+      throw new ApiError(400, "Block type is required");
+    }
+
+    const notebook = await addNotebookBlockService({
+      userId: user._id.toString(),
+      notebookId,
+      _id,
+      type,
+      prevBlockId,
+    });
+
+    return res.status(201).json(
+      new ApiResponse(201, notebook, "Block added")
+    );
+  }
+);
 
