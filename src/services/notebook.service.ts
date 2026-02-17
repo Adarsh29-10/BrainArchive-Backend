@@ -69,11 +69,11 @@ export const getNotebookByIdService = async(data: {
 
 
 export const updateNotebookService = async(data: {
-    notebookId:string,
-    userId: string
-    title: string,
-    description?: string,
-    isPublic: boolean
+    notebookId:string;
+    userId: string;
+    title: string;
+    description?: string;
+    isPublic: boolean;
 }) => {
     if(!data.title) {
         throw new ApiError(400, "Title is required");
@@ -116,40 +116,6 @@ export const deleteNotebookService = async(data: {
     return notebook;
 }
 
-export const updateNotebookBlockService = async (data: {
-  userId: string;
-  notebookId: string;
-  blocks: {
-    type: BlockType;
-    content: string;
-    order?: number;
-  }[];
-}) => {
-  const notebook = await Notebook.findOne({
-    _id: data.notebookId,
-    userId: data.userId,
-  });
-
-  if (!notebook) {
-    throw new ApiError(404, "Notebook not found");
-  }
-
-  notebook.blocks = data.blocks.map((block, index) => ({
-    type: block.type,
-    content: block.content,
-    order: block.order ?? index,
-  })) as any;
-
-  notebook.lastActivityAt = new Date();
-
-//   if (data.totalTimeSpent !== undefined) {
-//     notebook.totalTimeSpent = data.totalTimeSpent;
-//   }
-
-  await notebook.save();
-  return notebook;
-};
-
 
 export const addNotebookBlockService = async (data: {
   userId: string;
@@ -182,7 +148,7 @@ export const addNotebookBlockService = async (data: {
     notebook.blocks.push(newBlock);
   } else {
     const index = notebook.blocks.findIndex(
-      b => b._id.toString() === data.prevBlockId
+      b => b._id === data.prevBlockId
     );
 
     if (index === -1) {
@@ -196,5 +162,65 @@ export const addNotebookBlockService = async (data: {
 
   await notebook.save();
 
+  return notebook;
+};
+
+export const deleteNotebookBlockService = async (data: {
+  userId: string;
+  notebookId: string;
+  BlockId: string;
+}) => {
+  const notebook = await Notebook.findOne({
+    _id: data.notebookId,
+    userId: data.userId,
+  });
+
+  if (!notebook) {
+    throw new ApiError(404, "Notebook not found");
+  }
+
+  const blockExists = notebook.blocks.some(
+    b => b._id === data.BlockId
+  );
+  if(!blockExists){
+    throw new ApiError(404, 'Block not found')
+  }
+
+  notebook.blocks.pull({_id: data.BlockId});
+
+  notebook.lastActivityAt = new Date();
+
+  await notebook.save()
+
+  return notebook;
+}
+
+export const updateNotebookBlockContentService = async (data: {
+  userId: string;
+  notebookId: string;
+  _id: string;
+  content: string;
+}) => {
+  const notebook = await Notebook.findOne({
+    _id: data.notebookId,
+    userId: data.userId,
+  });
+
+  if (!notebook) {
+    throw new ApiError(404, "Notebook not found");
+  }
+
+  const block = notebook.blocks.find(
+    b => b._id === data._id
+  );
+  if(!block){
+    throw new ApiError(404, 'Block not found')
+  }
+
+  block.content = data.content;
+
+  notebook.lastActivityAt = new Date();
+
+  await notebook.save();
   return notebook;
 };
