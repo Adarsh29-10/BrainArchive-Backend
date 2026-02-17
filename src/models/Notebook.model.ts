@@ -2,7 +2,7 @@ import { Schema, model, Document, Types, ObjectId } from 'mongoose'
 import { BlockType } from '../types/blocks.types';
 
 interface IBlock {
-    _id?: ObjectId;
+    _id: string;
     type: BlockType;
     content: string;
     order: number
@@ -18,7 +18,11 @@ interface INotebook extends Document{
 }
 
 const blockSchema = new Schema<IBlock>(
-    { 
+    {
+        _id: {
+            type: String,
+            required: true
+        },
         type: {
             type: String,
             required: true,
@@ -35,7 +39,7 @@ const blockSchema = new Schema<IBlock>(
         },
     },
     {
-        _id: true,
+        _id: false,
         timestamps: true  
     }
 );
