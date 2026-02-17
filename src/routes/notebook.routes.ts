@@ -21,6 +21,6 @@ router.delete('/:notebookId', deleteNotebook);
 
 router.post('/:notebookId/block', addNotebookBlock)
 router.delete('/:notebookId/block/:BlockId', deleteNotebookBlock)
-router.patch('/:notebookId/blocks', updateNotebookBlockContent)
+router.patch('/:notebookId/block', updateNotebookBlockContent)
 
 export default router;
