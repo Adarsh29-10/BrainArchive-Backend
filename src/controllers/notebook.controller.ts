@@ -5,6 +5,7 @@ import {
     createNotebookService, 
     getNotebookByIdService, 
     getNotebooksService, 
+    getPublicNotebooksService,
     deleteNotebookService,
     addNotebookBlockService,
     updateNotebookBlockContentService, 
@@ -47,6 +48,16 @@ export const getNotebooks = asyncHandler(
         return res
             .status(200)
             .json(new ApiResponse(200, notebooks, 'Notebooks fetched'));
+    }
+)
+
+export const getPublicNotebooks = asyncHandler(
+    async (_req: Request, res: Response) => {
+        const notebooks = await getPublicNotebooksService();
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, notebooks, 'Public notebooks fetched'));
     }
 )
 

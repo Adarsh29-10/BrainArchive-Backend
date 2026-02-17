@@ -46,6 +46,13 @@ export const getNotebooksService = async(data: {
     return notebooks;
 }
 
+export const getPublicNotebooksService = async () => {
+    const notebooks = await Notebook.find({ isPublic: true })
+        .sort({ updatedAt: -1 });
+
+    return notebooks;
+}
+
 
 export const getNotebookByIdService = async(data: {
     notebookId:string,

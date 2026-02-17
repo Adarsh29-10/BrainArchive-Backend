@@ -8,11 +8,13 @@ import { checkJwt } from './middlewares/auth0.middleware';
 import { attachUser } from './middlewares/auth.middleware';
 import notebookRouter from './routes/notebook.routes';
 import userRouter from './routes/user.routes';
+import publicRouter from './routes/public.routes';
 
 dotenv.config()
 
 const app = express()
 
+app.use(cors());
 app.use(cors({
     origin: [
         "http://localhost:5173",
@@ -22,6 +24,7 @@ app.use(cors({
 }));
 app.use(express.json())
 
+app.use("/public", publicRouter);
 app.use("/user", checkJwt, attachUser, userRouter);
 app.use("/notebooks", checkJwt, attachUser, notebookRouter);
 
