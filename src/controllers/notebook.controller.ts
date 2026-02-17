@@ -7,8 +7,9 @@ import {
     getNotebooksService, 
     deleteNotebookService,
     addNotebookBlockService,
-    updateNotebookBlockService, 
+    updateNotebookBlockContentService, 
     updateNotebookService,
+    deleteNotebookBlockService
 } from "../services/notebook.service";
 import { ApiError } from "../utils/ApiError";
 import { getCurrentUser } from "../utils/getCurrentUser";
@@ -105,46 +106,21 @@ export const deleteNotebook = asyncHandler(
     }
 ) 
 
-export const updateNotebookBlock = asyncHandler(
-  async (req: Request, res: Response) => {
-
-    const user = await getCurrentUser(req);
-
-    const { notebookId } = req.params;
-    const { blocks } = req.body;
-
-    if (!Array.isArray(blocks)) {
-      throw new ApiError(400, "Blocks must be an array");
-    }
-
-    const notebook = await updateNotebookBlockService({
-      userId: user._id.toString(),
-      notebookId,
-      blocks,
-      
-    });
-
-    return res.status(200).json(
-      new ApiResponse(200, notebook, "Notebook blocks updated")
-    );
-  }
-);
-
 
 export const addNotebookBlock = asyncHandler(
   async (req: Request, res: Response) => {
     const user = await getCurrentUser(req);
     const { notebookId } = req.params;
     const { _id, type, prevBlockId } = req.body;
-
+    
     if (!_id) {
       throw new ApiError(400, "Block id is required");
     }
-
+    
     if (!type) {
       throw new ApiError(400, "Block type is required");
     }
-
+    
     const notebook = await addNotebookBlockService({
       userId: user._id.toString(),
       notebookId,
@@ -152,10 +128,56 @@ export const addNotebookBlock = asyncHandler(
       type,
       prevBlockId,
     });
-
+    
     return res.status(201).json(
       new ApiResponse(201, notebook, "Block added")
     );
   }
 );
 
+export const deleteNotebookBlock = asyncHandler(
+  async (req:Request, res:Response) => {
+    const user = await getCurrentUser(req);
+    const {notebookId, BlockId} = req.params;
+
+    if (!BlockId) {
+      throw new ApiError(400, "Block id is required");
+    }
+
+    const notebook = await deleteNotebookBlockService({
+      userId: user._id.toString(),
+      notebookId,
+      BlockId
+    })
+    
+    return res.status(201).json(
+      new ApiResponse(201, notebook, 'Notebook Deleted')
+    )
+    
+  }
+)
+
+export const updateNotebookBlockContent = asyncHandler(
+  async (req: Request, res: Response) => {
+
+    const user = await getCurrentUser(req);
+
+    const { notebookId } = req.params;
+    const { _id, content } = req.body;
+
+    if (!_id) {
+      throw new ApiError(400, "Block id is required");
+    }
+
+    const notebook = await updateNotebookBlockContentService({
+      userId: user._id.toString(),
+      notebookId,
+      _id,
+      content
+    });
+
+    return res.status(200).json(
+      new ApiResponse(200, notebook, "Block content updated")
+    );
+  }
+);
