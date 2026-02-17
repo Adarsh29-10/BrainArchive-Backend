@@ -48,9 +48,19 @@ export const getNotebooksService = async(data: {
 
 export const getPublicNotebooksService = async () => {
     const notebooks = await Notebook.find({ isPublic: true })
-        .sort({ updatedAt: -1 });
+        .sort({ updatedAt: -1 })
+        .populate({ path: "userId", select: "name picture" })
+        .lean();
 
-    return notebooks;
+    return notebooks.map((notebook: any) => {
+        const { userId, ...rest } = notebook;
+
+        return {
+            ...rest,
+            ownerName: userId?.name || "Unknown User",
+            ownerPicture: userId?.picture || null,
+        };
+    });
 }
 
 
