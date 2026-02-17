@@ -5,8 +5,9 @@ import {
     getNotebookById, 
     updateNotebook, 
     deleteNotebook,
-    updateNotebookBlock,
-    addNotebookBlock
+    addNotebookBlock,
+    deleteNotebookBlock,
+    updateNotebookBlockContent,
 } from '../controllers/notebook.controller'
 
 const router = express.Router()
@@ -19,6 +20,7 @@ router.put('/:notebookId', updateNotebook);
 router.delete('/:notebookId', deleteNotebook);
 
 router.post('/:notebookId/block', addNotebookBlock)
-router.patch('/:notebookId/blocks', updateNotebookBlock)
+router.delete('/:notebookId/block/:BlockId', deleteNotebookBlock)
+router.patch('/:notebookId/blocks', updateNotebookBlockContent)
 
 export default router;
