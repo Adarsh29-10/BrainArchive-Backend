@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { User } from "../models/User.model";
+import { User } from "../modules/user/User.model";
 import { ApiError } from "./ApiError";
 
 export const getCurrentUser = async (req: Request) => {
