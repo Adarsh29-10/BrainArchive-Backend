@@ -5,8 +5,6 @@ import { userMe } from './user.controller';
 
 const router = express.Router()
 
-router.use(checkJwt, attachUser);
-
-router.post('/me', userMe)
+router.post('/me', checkJwt, attachUser, userMe)
 
 export default router;
