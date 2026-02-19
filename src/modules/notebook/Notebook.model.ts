@@ -5,7 +5,7 @@ interface IBlock {
     _id: string;
     type: BlockType;
     content: string;
-    order: number
+    order?: number
 }
 interface INotebook extends Document{
     userId: Types.ObjectId;

@@ -11,6 +11,7 @@ import {
     deleteNotebookBlock,
     updateNotebookBlockContent,
     getPublicNotebooks,
+    addNotebookBlockBulkSave,
 } from './notebook.controller';
 
 
@@ -30,5 +31,7 @@ router.delete('/:notebookId', deleteNotebook);
 router.post('/:notebookId/block', addNotebookBlock)
 router.delete('/:notebookId/block/:BlockId', deleteNotebookBlock)
 router.patch('/:notebookId/block', updateNotebookBlockContent)
+
+router.post('/:notebookId/block/bulk', addNotebookBlockBulkSave)
 
 export default router;

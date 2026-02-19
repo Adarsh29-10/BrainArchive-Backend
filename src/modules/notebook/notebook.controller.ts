@@ -10,7 +10,8 @@ import {
     addNotebookBlockService,
     updateNotebookBlockContentService, 
     updateNotebookService,
-    deleteNotebookBlockService
+    deleteNotebookBlockService,
+    addNotebookBlockBulkSaveService
 } from "./notebook.service";
 import { ApiError } from "../../utils/ApiError";
 import { getCurrentUser } from "../../utils/getCurrentUser";
@@ -192,3 +193,30 @@ export const updateNotebookBlockContent = asyncHandler(
     );
   }
 );
+
+
+export const addNotebookBlockBulkSave = asyncHandler(
+  async (req:Request, res:Response) => {
+    const user = await getCurrentUser(req);
+    const { notebookId } = req.params;
+    const { blocks } = req.body;
+    
+    if (!notebookId) {
+      throw new ApiError(400, "Notebook ID is required");
+    }
+
+    if (!Array.isArray(blocks)) {
+      throw new ApiError(400, "Blocks must be an array");
+    }
+
+    const notebook = await addNotebookBlockBulkSaveService({
+      userId: user._id.toString(),
+      notebookId,
+      blocks,
+    });
+    
+    return res.status(200).json(
+      new ApiResponse(200, notebook, "Notebook blocks bulk saved")
+    );
+  }
+)

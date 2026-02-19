@@ -241,3 +241,42 @@ export const updateNotebookBlockContentService = async (data: {
   await notebook.save();
   return notebook;
 };
+
+
+export const addNotebookBlockBulkSaveService = async (data: {
+  userId: string;
+  notebookId: string;
+  blocks: {
+    _id: string;
+    type: BlockType;
+    content: string;
+  }[];
+}) => {
+
+  const notebook = await Notebook.findOne({
+    _id: data.notebookId,
+    userId: data.userId,
+  });
+
+  if (!notebook) {
+    throw new ApiError(404, "Notebook not found");
+  }
+
+  // Optional safety limits
+  if (data.blocks.length > 1000) {
+    throw new ApiError(400, "Too many blocks");
+  }
+
+  // Replace entire blocks array
+  notebook.blocks = data.blocks.map((block) => ({
+    _id: block._id, 
+    type: block.type,
+    content: block.content,
+  })) as any;
+
+  notebook.lastActivityAt = new Date();
+
+  await notebook.save();
+
+  return notebook;
+};
