@@ -262,17 +262,18 @@ export const addNotebookBlockBulkSaveService = async (data: {
     throw new ApiError(404, "Notebook not found");
   }
 
-  // Optional safety limits
-  if (data.blocks.length > 1000) {
-    throw new ApiError(400, "Too many blocks");
-  }
-
-  // Replace entire blocks array
-  notebook.blocks = data.blocks.map((block) => ({
+  const newBlocks = data.blocks.map((block) => ({
     _id: block._id, 
     type: block.type,
     content: block.content,
   })) as any;
+
+  // Optional safety limits
+  if (newBlocks.length > 1000) {
+    throw new ApiError(400, "Too many blocks");
+  }
+
+  notebook.blocks.push(...newBlocks);
 
   notebook.lastActivityAt = new Date();
 
