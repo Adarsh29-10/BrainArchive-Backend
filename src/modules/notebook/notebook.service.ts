@@ -78,10 +78,12 @@ export const getNotebookByIdService = async(data: {
         throw new ApiError(400, 'Notebook id is required');
     }
 
-    const notebook = await Notebook.findById({
+    const notebook = await Notebook.findOne({
         _id: data.notebookId,
         userId: data.userId
     })
+    .populate({ path: "userId", select: "name picture" })
+    .lean();
 
     if (!notebook) {
         throw new ApiError(404, 'Notebook not found');
