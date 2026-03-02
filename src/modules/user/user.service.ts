@@ -1,5 +1,6 @@
 import { User } from "./User.model"
 import { ApiError } from "../../utils/ApiError"
+import { addSampleNotebook } from "../../utils/addSampleNotebook"
 
 export const userMeService = async (data: {
     auth0Id: string,
@@ -16,6 +17,7 @@ export const userMeService = async (data: {
     if (!user) {
         try {
             user = await User.create(data);
+            await addSampleNotebook(user._id.toString())
         } catch (e: any) {
             if (e.code === 11000) {
                 user = await User.findOne({ auth0Id: data.auth0Id });
@@ -29,6 +31,5 @@ export const userMeService = async (data: {
         user.picture = data.picture;
         await user.save();
     }
-
     return user;
 }
