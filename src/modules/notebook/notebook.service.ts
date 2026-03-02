@@ -1,6 +1,7 @@
 import { Notebook } from "./Notebook.model";
 import { BlockType } from "../../types/blocks.types";
 import { ApiError } from "../../utils/ApiError";
+import { addSampleNotebook } from "../../utils/addSampleNotebook";
 
 export const createNotebookService = async(data: {
     title:string;
@@ -42,6 +43,11 @@ export const getNotebooksService = async(data: {
 
     const notebooks = await Notebook.find({ userId: data.userId})
         .sort({updatedAt: -1})
+
+    if(notebooks.length === 0){
+      await addSampleNotebook(data.userId)
+      return await Notebook.find({ userId: data.userId})
+    }
 
     return notebooks;
 }
