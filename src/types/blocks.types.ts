@@ -11,6 +11,7 @@ export const BlockType = [
   "code",
   "link",
   "bullet",
+  "quotes",
 ] as const;
 
 export type BlockType = (typeof BlockType)[number];
