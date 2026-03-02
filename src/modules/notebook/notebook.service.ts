@@ -52,7 +52,7 @@ export const getNotebooksService = async(data: {
     return notebooks;
 }
 
-export const getPublicNotebooksService = async () => {
+export const getAllPublicNotebooksService = async () => {
     const notebooks = await Notebook.find({ isPublic: true })
         .sort({ updatedAt: -1 })
         .populate({ path: "userId", select: "name picture" })
@@ -90,6 +90,27 @@ export const getNotebookByIdService = async(data: {
     }
 
     return notebook;
+}
+
+
+export const getPublicNotebookContentByIdService = async(data: {
+    notebookId:string,
+}) => {
+    if(!data.notebookId){
+        throw new ApiError(400, 'Notebook id is required');
+    }
+
+    const notebook = await Notebook.findOne({
+        _id: data.notebookId,
+    })
+    .populate({ path: "userId", select: "name picture" })
+    .lean();
+
+    if (!notebook) {
+        throw new ApiError(404, 'Notebook not found');
+    }
+
+    if(notebook.isPublic) return notebook;
 }
 
 

@@ -10,14 +10,17 @@ import {
     addNotebookBlock,
     deleteNotebookBlock,
     updateNotebookBlockContent,
-    getPublicNotebooks,
+    getAllPublicNotebooks,
     addNotebookBlockBulkSave,
+    getPublicNotebookContentById
 } from './notebook.controller';
 
 
 const router = express.Router()
 
-router.get('/public', getPublicNotebooks)
+router.get('/public', getAllPublicNotebooks);
+router.get('/public/:notebookId', getPublicNotebookContentById);
+
 
 router.use(checkJwt, attachUser);
 

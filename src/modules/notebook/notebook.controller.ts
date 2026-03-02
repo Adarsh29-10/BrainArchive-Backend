@@ -5,13 +5,14 @@ import {
     createNotebookService, 
     getNotebookByIdService, 
     getNotebooksService, 
-    getPublicNotebooksService,
+    getAllPublicNotebooksService,
     deleteNotebookService,
     addNotebookBlockService,
     updateNotebookBlockContentService, 
     updateNotebookService,
     deleteNotebookBlockService,
-    addNotebookBlockBulkSaveService
+    addNotebookBlockBulkSaveService,
+    getPublicNotebookContentByIdService
 } from "./notebook.service";
 import { ApiError } from "../../utils/ApiError";
 import { getCurrentUser } from "../../utils/getCurrentUser";
@@ -52,9 +53,9 @@ export const getNotebooks = asyncHandler(
     }
 )
 
-export const getPublicNotebooks = asyncHandler(
+export const getAllPublicNotebooks = asyncHandler(
     async (_req: Request, res: Response) => {
-        const notebooks = await getPublicNotebooksService();
+        const notebooks = await getAllPublicNotebooksService();
 
         return res
             .status(200)
@@ -78,6 +79,21 @@ export const getNotebookById = asyncHandler(
       .json(new ApiResponse(200, notebook, 'Notebook fetched successfully'));
   }
 );
+
+export const getPublicNotebookContentById = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { notebookId } = req.params;
+
+    const notebook = await getPublicNotebookContentByIdService({
+      notebookId: notebookId,
+    });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, notebook, 'Notebook fetched successfully'));
+  }
+);
+
 
 
 export const updateNotebook = asyncHandler(
